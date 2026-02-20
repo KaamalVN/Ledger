@@ -43,8 +43,7 @@ kotlin {
     sourceSets {
         val commonMain by getting
 
-        val desktopMain by creating {
-            dependsOn(commonMain)
+        val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutines.swing)
