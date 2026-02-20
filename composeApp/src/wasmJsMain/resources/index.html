@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ledger</title>
+    <link type="text/css" rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        window.googleAuthBridge = {
+            tokenClient: null,
+            onTokenReceived: null,
+            pendingClientId: null,
+
+            init(clientId) {
+                console.log("googleAuthBridge: Initializing with ID", clientId);
+                this.pendingClientId = clientId;
+                this.tryInit();
+            },
+
+            tryInit() {
+                if (!window.google) {
+                    console.log("googleAuthBridge: Google library not loaded yet, waiting...");
+                    setTimeout(() => this.tryInit(), 500);
+                    return;
+                }
+
+                console.log("googleAuthBridge: Google library loaded, creating token client...");
+                try {
+                    this.tokenClient = google.accounts.oauth2.initTokenClient({
+                        client_id: this.pendingClientId,
+                        scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email',
+                        callback: (response) => {
+                            console.log("googleAuthBridge: Received response from Google", response);
+                            if (this.onTokenReceived) {
+                                if (response.error) {
+                                    console.error("googleAuthBridge: Auth error", response.error);
+                                    this.onTokenReceived(null);
+                                } else {
+                                    console.log("googleAuthBridge: Auth success, passing token back");
+                                    this.onTokenReceived(response.access_token);
+                                }
+                            }
+                        },
+                    });
+                    console.log("googleAuthBridge: Token client initialized");
+                } catch (e) {
+                    console.error("googleAuthBridge: Failed to init token client", e);
+                }
+            },
+
+            requestToken(callback) {
+                console.log("googleAuthBridge: requestToken called");
+                this.onTokenReceived = callback;
+                if (this.tokenClient) {
+                    this.tokenClient.requestAccessToken();
+                } else {
+                    console.error("googleAuthBridge: Token client not initialized. Retrying init...");
+                    this.tryInit();
+                    // If still not ready, user might need to click again, 
+                    // or we could show a "Loading..." state.
+                    callback(null);
+                }
+            }
+        };
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('SW registered: ', registration);
+                }).catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+            });
+        }
+    </script>
+</head>
+
+<body style="margin: 0; padding: 0; overflow: hidden; background-color: #000000;">
+    <div id="compose-target"
+        style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20" stroke="#ccc" stroke-width="4" fill="none" />
+            <circle cx="25" cy="25" r="20" stroke="#333" stroke-width="4" fill="none" stroke-linecap="round"
+                stroke-dasharray="90 125">
+                <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s"
+                    repeatCount="indefinite" />
+            </circle>
+        </svg>
+    </div>
+    <script type="application/javascript" src="composeApp.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+package com.example.ledger.data
+
+/**
+ * JS implementation of GoogleAuthProvider.
+ */
+actual class GoogleAuthProvider actual constructor() {
+    private var accessToken: String? = null
+    private var email: String? = null
+    private var displayName: String? = null
+    
+    actual fun isSignedIn(): Boolean = accessToken != null
+    
+    actual suspend fun getAccessToken(): String? = accessToken
+    
+    actual fun getUserEmail(): String? = email
+    
+    actual fun getUserDisplayName(): String? = displayName
+    
+    fun setAuthState(token: String?, userEmail: String?, name: String?) {
+        accessToken = token
+        email = userEmail
+        displayName = name
+    }
+    
+    actual fun signOut() {
+        accessToken = null
+        email = null
+        displayName = null
+    }
+
+    actual suspend fun signIn(): Boolean {
+        return false
+    }
+}
