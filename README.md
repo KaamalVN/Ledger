@@ -2,6 +2,12 @@
 
 Ledger is a privacy-first, cross-platform personal finance application built with **Kotlin Multiplatform** and **Compose Multiplatform**. It allows you to track expenses, income, and recurring payments with a beautiful, minimalist UI.
 
+## App Screens
+
+| Dashboard | Settings | Transactions | Recurring |
+|-----------|----------|--------------|-----------|
+| <img src="https://github.com/user-attachments/assets/736a4c21-fec4-45ca-b49b-5f6661dc4be5" width="300" alt="Dashboard"/> | <img src="https://github.com/user-attachments/assets/f59fd7fb-df63-44cd-b4a2-74c92711e132" width="300" alt="Settings"/> | <img src="https://github.com/user-attachments/assets/a41d4542-d0cd-44ee-bf69-54933cda845f" width="300" alt="Transactions"/> | <img src="https://github.com/user-attachments/assets/66bbbb8e-c26e-46ed-bb8e-c2de17d033ac" width="300" alt="Recurring"/> |
+
 ## Platforms
 - **Android**: Native performance and Material 3 design.
 - **Web (PWA)**: Modern WebAssembly (Wasm) target with offline support.
